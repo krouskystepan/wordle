@@ -3,32 +3,60 @@
 import { useEffect, useState } from 'react'
 import Grid from '@/components/Grid'
 import Keyboard from '@/components/Keyboard'
-import { MAX_GUESSES } from '@/data/config'
 
 export default function Home() {
+  const [wordLength, setWordLength] = useState(5)
+  const [maxGuesses, setMaxGuesses] = useState(6)
   const [words, setWords] = useState<string[]>([])
   const [targetWord, setTargetWord] = useState('')
   const [guesses, setGuesses] = useState<string[]>([])
   const [currentGuess, setCurrentGuess] = useState('')
   const [gameOver, setGameOver] = useState(false)
+  const [letterStatuses, setLetterStatuses] = useState<Record<string, string>>(
+    {}
+  )
 
   useEffect(() => {
-    fetch('/words-en.txt')
+    if (wordLength === 4) setMaxGuesses(5)
+    if (wordLength === 5) setMaxGuesses(6)
+    if (wordLength === 6) setMaxGuesses(7)
+  }, [wordLength])
+
+  useEffect(() => {
+    fetch(`/${wordLength}-words.txt`)
       .then((res) => res.text())
       .then((text) => {
         const loadedWords = text.split('\n').map((w) => w.trim().toUpperCase())
         setWords(loadedWords)
-        setTargetWord(
+        const randomWord =
           loadedWords[Math.floor(Math.random() * loadedWords.length)]
-        )
+        setTargetWord(randomWord)
+        setGuesses([])
+        setCurrentGuess('')
+        setGameOver(false)
+        setLetterStatuses({})
       })
-  }, [])
+  }, [wordLength])
 
   useEffect(() => {
-    if (targetWord) {
-      console.log('Target word is:', targetWord)
-    }
+    if (targetWord) console.log('Target word is:', targetWord)
   }, [targetWord])
+
+  const updateLetterStatuses = (guess: string) => {
+    const newStatuses = { ...letterStatuses }
+
+    guess.split('').forEach((letter, idx) => {
+      if (letter === targetWord[idx]) {
+        newStatuses[letter] = 'correct'
+      } else if (targetWord.includes(letter)) {
+        if (newStatuses[letter] !== 'correct') newStatuses[letter] = 'present'
+      } else {
+        newStatuses[letter] = 'absent'
+      }
+    })
+
+    setLetterStatuses(newStatuses)
+  }
 
   const handleKey = (key: string) => {
     if (!targetWord || gameOver) return
@@ -37,10 +65,11 @@ export default function Home() {
       if (currentGuess.length === targetWord.length) {
         const newGuesses = [...guesses, currentGuess.toUpperCase()]
         setGuesses(newGuesses)
+        updateLetterStatuses(currentGuess.toUpperCase())
         setCurrentGuess('')
 
         if (currentGuess.toUpperCase() === targetWord) setGameOver(true)
-        else if (newGuesses.length === MAX_GUESSES) setGameOver(true)
+        else if (newGuesses.length === maxGuesses) setGameOver(true)
       }
     } else if (key === 'Backspace') {
       setCurrentGuess((prev) => prev.slice(0, -1))
@@ -59,11 +88,29 @@ export default function Home() {
     setGuesses([])
     setCurrentGuess('')
     setGameOver(false)
+    setLetterStatuses({})
   }
 
   return (
     <div className="flex flex-col items-center p-6">
       <h1 className="text-5xl font-bold">Custom Wordle</h1>
+
+      <div className="flex gap-3 my-8">
+        {[4, 5, 6].map((len) => (
+          <button
+            key={len}
+            onClick={() => setWordLength(len)}
+            className={`px-4 py-2 rounded-lg ${
+              wordLength === len
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            }`}
+          >
+            {len}-Letter
+          </button>
+        ))}
+      </div>
+
       {targetWord && (
         <>
           <Grid
@@ -71,8 +118,9 @@ export default function Home() {
             currentGuess={currentGuess}
             wordLength={targetWord.length}
             targetWord={targetWord}
+            maxGuesses={maxGuesses}
           />
-          <Keyboard onKeyPress={handleKey} />
+          <Keyboard onKeyPress={handleKey} letterStatuses={letterStatuses} />
           {gameOver && (
             <div className="mt-4 text-xl font-semibold flex flex-col items-center">
               {guesses[guesses.length - 1] === targetWord ? (

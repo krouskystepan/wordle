@@ -1,10 +1,9 @@
-import { MAX_GUESSES } from '@/data/config'
-
 interface GridProps {
   guesses: string[]
   currentGuess: string
   wordLength: number
   targetWord: string
+  maxGuesses: number
 }
 
 export default function Grid({
@@ -12,6 +11,7 @@ export default function Grid({
   currentGuess,
   wordLength,
   targetWord,
+  maxGuesses,
 }: GridProps) {
   const getCellColor = (letter: string, idx: number, guess: string) => {
     if (!letter) return 'bg-white border-gray-300 text-black'
@@ -39,8 +39,8 @@ export default function Grid({
   }
 
   return (
-    <div className="flex flex-col gap-2 items-center my-10">
-      {Array.from({ length: MAX_GUESSES }).map((_, i) => {
+    <div className="flex flex-col gap-2 items-center mb-10">
+      {Array.from({ length: maxGuesses }).map((_, i) => {
         const guess = guesses[i] || (i === guesses.length ? currentGuess : '')
         return (
           <div key={i} className="flex gap-2">

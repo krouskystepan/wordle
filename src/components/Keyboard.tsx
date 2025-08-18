@@ -4,11 +4,15 @@ import { useState, useEffect, useCallback } from 'react'
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void
+  letterStatuses: Record<string, string>
 }
 
 const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM']
 
-export default function Keyboard({ onKeyPress }: KeyboardProps) {
+export default function Keyboard({
+  onKeyPress,
+  letterStatuses,
+}: KeyboardProps) {
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set())
 
   const pressKey = useCallback(
@@ -25,6 +29,12 @@ export default function Keyboard({ onKeyPress }: KeyboardProps) {
     },
     [onKeyPress]
   )
+
+  const getKeyColor = (key: string) => {
+    const status = letterStatuses[key]
+    if (status === 'absent') return 'bg-black text-gray-700'
+    return 'bg-gray-800'
+  }
 
   useEffect(() => {
     const handlePhysicalKey = (e: KeyboardEvent) => {
@@ -47,9 +57,9 @@ export default function Keyboard({ onKeyPress }: KeyboardProps) {
             <button
               key={key}
               onClick={() => pressKey(key)}
-              className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors ${
-                pressedKeys.has(key) ? 'bg-gray-500' : 'bg-gray-700'
-              }`}
+              className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 ${getKeyColor(
+                key
+              )} ${pressedKeys.has(key) ? 'brightness-150' : ''}`}
             >
               {key}
             </button>
