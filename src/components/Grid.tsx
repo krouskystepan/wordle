@@ -39,7 +39,7 @@ export default function Grid({
   }
 
   return (
-    <div className="flex flex-col gap-2 items-center mt-10">
+    <div className="flex flex-col gap-2 items-center my-10">
       {Array.from({ length: MAX_GUESSES }).map((_, i) => {
         const guess = guesses[i] || (i === guesses.length ? currentGuess : '')
         return (

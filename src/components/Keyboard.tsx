@@ -40,7 +40,7 @@ export default function Keyboard({ onKeyPress }: KeyboardProps) {
   }, [pressKey])
 
   return (
-    <div className="flex flex-col gap-2 items-center mt-6">
+    <div className="flex flex-col gap-2 items-center">
       {rows.map((row, i) => (
         <div key={i} className="flex gap-2">
           {row.split('').map((key) => (
