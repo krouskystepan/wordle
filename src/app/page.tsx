@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Grid from '@/components/Grid'
 import Keyboard from '@/components/Keyboard'
-import { WORD_LENGTH, MAX_GUESSES } from '@/data/config'
+import { MAX_GUESSES } from '@/data/config'
 
 export default function Home() {
   const [words, setWords] = useState<string[]>([])
@@ -34,7 +34,7 @@ export default function Home() {
     if (!targetWord || gameOver) return
 
     if (key === 'Enter') {
-      if (currentGuess.length === WORD_LENGTH) {
+      if (currentGuess.length === targetWord.length) {
         const newGuesses = [...guesses, currentGuess.toUpperCase()]
         setGuesses(newGuesses)
         setCurrentGuess('')
@@ -44,7 +44,10 @@ export default function Home() {
       }
     } else if (key === 'Backspace') {
       setCurrentGuess((prev) => prev.slice(0, -1))
-    } else if (/^[A-Z]$/i.test(key) && currentGuess.length < WORD_LENGTH) {
+    } else if (
+      /^[A-Z]$/i.test(key) &&
+      currentGuess.length < targetWord.length
+    ) {
       setCurrentGuess((prev) => prev + key.toUpperCase())
     }
   }
@@ -60,13 +63,13 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center p-6">
-      <h1 className="text-5xl font-bold mb-4">Custom Wordle</h1>
+      <h1 className="text-5xl font-bold">Custom Wordle</h1>
       {targetWord && (
         <>
           <Grid
             guesses={guesses}
             currentGuess={currentGuess}
-            wordLength={WORD_LENGTH}
+            wordLength={targetWord.length}
             targetWord={targetWord}
           />
           <Keyboard onKeyPress={handleKey} />
