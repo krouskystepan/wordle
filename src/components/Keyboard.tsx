@@ -33,7 +33,7 @@ export default function Keyboard({
   const getKeyColor = (key: string) => {
     const status = letterStatuses[key]
     if (status === 'absent') return 'bg-black text-gray-700'
-    return 'bg-gray-800'
+    return 'bg-gray-800 text-white'
   }
 
   useEffect(() => {
@@ -51,21 +51,65 @@ export default function Keyboard({
 
   return (
     <div className="flex flex-col gap-2 items-center">
-      {rows.map((row, i) => (
-        <div key={i} className="flex gap-2">
-          {row.split('').map((key) => (
-            <button
-              key={key}
-              onClick={() => pressKey(key)}
-              className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 ${getKeyColor(
-                key
-              )} ${pressedKeys.has(key) ? 'brightness-150' : ''}`}
-            >
-              {key}
-            </button>
-          ))}
-        </div>
-      ))}
+      {/* 1. řada */}
+      <div className="flex gap-2">
+        {rows[0].split('').map((key) => (
+          <button
+            key={key}
+            onClick={() => pressKey(key)}
+            className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 cursor-pointer ${getKeyColor(
+              key
+            )} ${pressedKeys.has(key) ? 'brightness-150' : ''}`}
+          >
+            {key}
+          </button>
+        ))}
+      </div>
+
+      {/* 2. řada */}
+      <div className="flex gap-2">
+        {rows[1].split('').map((key) => (
+          <button
+            key={key}
+            onClick={() => pressKey(key)}
+            className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 cursor-pointer ${getKeyColor(
+              key
+            )} ${pressedKeys.has(key) ? 'brightness-150' : ''}`}
+          >
+            {key}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-2 items-center">
+        <button
+          onClick={() => pressKey('Enter')}
+          className="w-20 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 cursor-pointer bg-emerald-800 text-white"
+        >
+          Enter
+        </button>
+
+        {rows[2].split('').map((key) => (
+          <button
+            key={key}
+            onClick={() => pressKey(key)}
+            className={`w-12 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 cursor-pointer ${getKeyColor(
+              key
+            )} ${pressedKeys.has(key) ? 'brightness-150' : ''}`}
+          >
+            {key}
+          </button>
+        ))}
+
+        <button
+          onClick={() => pressKey('Backspace')}
+          className={
+            'w-20 h-14 rounded-md font-bold text-lg uppercase transition-colors border border-gray-800 cursor-pointer bg-red-700 text-white'
+          }
+        >
+          ⌫
+        </button>
+      </div>
     </div>
   )
 }

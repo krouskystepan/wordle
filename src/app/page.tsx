@@ -92,21 +92,21 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center p-6">
-      <h1 className="text-5xl font-bold">Custom Wordle</h1>
+    <div className="flex flex-col items-center p-6 bg-black h-dvh">
+      <h1 className="text-5xl font-bold text-white">Infinite Wordle</h1>
 
       <div className="flex gap-3 my-8">
         {[4, 5, 6].map((len) => (
           <button
             key={len}
             onClick={() => setWordLength(len)}
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 rounded-lg border-none cursor-pointer ${
               wordLength === len
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
             }`}
           >
-            {len}-Letter
+            {len} Letter Wordle
           </button>
         ))}
       </div>
@@ -122,7 +122,7 @@ export default function Home() {
           />
           <Keyboard onKeyPress={handleKey} letterStatuses={letterStatuses} />
           {gameOver && (
-            <div className="mt-4 text-xl font-semibold flex flex-col items-center">
+            <div className="mt-4 text-xl font-semibold flex flex-col items-center text-white">
               {guesses[guesses.length - 1] === targetWord ? (
                 <p>🎉 You won!</p>
               ) : (
