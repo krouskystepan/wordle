@@ -47,7 +47,7 @@ export default function Grid({
 
         const wrongWordClass =
           i === guesses.length && invalidGuess
-            ? 'shake <border-red-5></border-red-5>00 !bg-red-50'
+            ? 'shake border-red-500 !bg-red-50'
             : ''
 
         return (
