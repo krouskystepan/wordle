@@ -4,6 +4,7 @@ interface GridProps {
   wordLength: number
   targetWord: string
   maxGuesses: number
+  invalidGuess?: boolean
 }
 
 export default function Grid({
@@ -12,6 +13,7 @@ export default function Grid({
   wordLength,
   targetWord,
   maxGuesses,
+  invalidGuess = false,
 }: GridProps) {
   const getCellColor = (letter: string, idx: number, guess: string) => {
     if (!letter) return 'bg-white border-gray-300 text-black'
@@ -42,6 +44,12 @@ export default function Grid({
     <div className="flex flex-col gap-2 items-center mb-10">
       {Array.from({ length: maxGuesses }).map((_, i) => {
         const guess = guesses[i] || (i === guesses.length ? currentGuess : '')
+
+        const wrongWordClass =
+          i === guesses.length && invalidGuess
+            ? 'shake <border-red-5></border-red-5>00 !bg-red-50'
+            : ''
+
         return (
           <div key={i} className="flex gap-2">
             {Array.from({ length: wordLength }).map((_, j) => {
@@ -55,7 +63,7 @@ export default function Grid({
               return (
                 <div
                   key={j}
-                  className={`w-16 h-16 flex justify-center items-center font-bold text-2xl uppercase border-2 ${colorClass}`}
+                  className={`w-16 h-16 flex justify-center items-center font-bold text-2xl uppercase border-3 ${colorClass} ${wrongWordClass}`}
                 >
                   {letter}
                 </div>

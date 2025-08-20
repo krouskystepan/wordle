@@ -15,6 +15,7 @@ export default function Home() {
   const [letterStatuses, setLetterStatuses] = useState<Record<string, string>>(
     {}
   )
+  const [invalidGuess, setInvalidGuess] = useState(false)
 
   useEffect(() => {
     if (wordLength === 4) setMaxGuesses(5)
@@ -63,12 +64,20 @@ export default function Home() {
 
     if (key === 'Enter') {
       if (currentGuess.length === targetWord.length) {
-        const newGuesses = [...guesses, currentGuess.toUpperCase()]
+        const guessUpper = currentGuess.toUpperCase()
+
+        if (!words.includes(guessUpper)) {
+          setInvalidGuess(true)
+          setTimeout(() => setInvalidGuess(false), 600)
+          return
+        }
+
+        const newGuesses = [...guesses, guessUpper]
         setGuesses(newGuesses)
-        updateLetterStatuses(currentGuess.toUpperCase())
+        updateLetterStatuses(guessUpper)
         setCurrentGuess('')
 
-        if (currentGuess.toUpperCase() === targetWord) setGameOver(true)
+        if (guessUpper === targetWord) setGameOver(true)
         else if (newGuesses.length === maxGuesses) setGameOver(true)
       }
     } else if (key === 'Backspace') {
@@ -119,6 +128,7 @@ export default function Home() {
             wordLength={targetWord.length}
             targetWord={targetWord}
             maxGuesses={maxGuesses}
+            invalidGuess={invalidGuess}
           />
           <Keyboard onKeyPress={handleKey} letterStatuses={letterStatuses} />
           {gameOver && (
